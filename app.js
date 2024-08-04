@@ -9,6 +9,7 @@ const flash = require('connect-flash');
 const ownersRouter = require('./routes/ownersRouter');
 const usersRouter = require('./routes/usersRouter');
 const productsRouter = require('./routes/productsRouter');
+const indexRouter = require('./routes/index');
 
 const db = require('./config/mongoose-connection');
 
@@ -20,17 +21,19 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 app.use(expressSession({
-    secret: process.env.EXPRESS_SESSION_SECRET,
+    secret: process.env.JWT_KEY,
     resave: false,
     saveUninitialized: false,
+
 }));
+
 app.use(flash());
+
+app.use('/', indexRouter);
 app.use('/owners', ownersRouter);
 app.use('/users', usersRouter);
 app.use('/products', productsRouter);  
 
-app.get('/', (req, res) => {
-    
-});
+
 
 app.listen(3000);
