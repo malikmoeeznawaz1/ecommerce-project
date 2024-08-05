@@ -24,9 +24,7 @@ app.use(expressSession({
     secret: process.env.JWT_KEY,
     resave: false,
     saveUninitialized: false,
-
 }));
-
 app.use(flash());
 
 app.use('/', indexRouter);

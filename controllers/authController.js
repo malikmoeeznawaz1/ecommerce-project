@@ -25,8 +25,7 @@ module.exports.registerUser = async function (req, res) {
           res.send("user created successfully!");
         }
       });
-    }
-    else {
+    } else {
       res.status(400).send("User already exists!");
     }
   } catch (error) {
@@ -36,21 +35,33 @@ module.exports.registerUser = async function (req, res) {
 };
 
 module.exports.loginUser = async function (req, res) {
-    let { email, password } = req.body;
-    
-    let user = await userModel.findOne({email});
+  let { email, password } = req.body;
 
-    if(!user) return res.status(400).send("email or password is not correct!");
+  let user = await userModel.findOne({ email });
 
-    bcrypt.compare(password, user.password, (err, result)=>{
-        if(result){
-            let token = generateToken(user);
-            res.cookie("token", token);
-            res.send("login successful!");
-        }
-        else{
-            return res.status(400).send("email or password is not correct!");
-        }
-    })
-}
+  if (!user) {
+    req.flash("error", "email or password is not correct!");
+    res.redirect("/");
+  }
+  else{
+    bcrypt.compare(password, user.password, (err, result) => {
+      if (result) {
+        let token = generateToken(user);
+        
+        res.cookie("token", token);
+        req.flash("success", "login successful!");
+        res.send("login successful!");
+      } else {
+        req.flash("error", "email or password is not correct!");
+        res.redirect("/");
+        // return res.status(400).send("email or password is not correct!");
+      }
+    });
+  }
+  
+};
 
+module.exports.logoutUser = async function (req, res) {
+  res.cookie("token", "");
+  res.redirect("/");
+};

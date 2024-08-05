@@ -1,22 +1,28 @@
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 const userModel = require("../models/user-model");
 
-module.exports = async function (req, res, next) {
-    if(!req.cookies.token){
-        req.flash("error", "Please login to access this page");
-        return res.redirect("/");
-    } 
-
+module.exports.isLoggedIn = async function (req, res, next) {
+  if (!req.cookies.token) {
+    console.log('Here is rejectrd cookie user ');
+    req.flash("error", "Please login to access this page");
+    res.redirect("/");
+  } else {
     try {
-        let decoded = jwt.verify(req.cookies.token, process.env.JWT_KEY);
+      let decoded = jwt.verify(req.cookies.token, process.env.JWT_KEY);
 
-        let user = await userModel.findOne({email: decoded.email}).select("-password");
+      let user = await userModel
+        .findOne({ email: decoded.email })
+        .select("-password");
+      
+        console.log('Here is cookie user '+ decoded.email);
+        
 
-        req.user = user;
+      req.user = user;
 
-        next();
+      next();
     } catch (error) {
-        req.flash("error", "Something went wrong, please login again");
-        return res.redirect("/");   
+      req.flash("error", "Something went wrong, please login again");
+      res.redirect("/");
     }
-}
+  }
+};
