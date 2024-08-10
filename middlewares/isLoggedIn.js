@@ -3,7 +3,6 @@ const userModel = require("../models/user-model");
 
 module.exports.isLoggedIn = async function (req, res, next) {
   if (!req.cookies.token) {
-    console.log('Here is rejectrd cookie user ');
     req.flash("error", "Please login to access this page");
     res.redirect("/");
   } else {
@@ -12,10 +11,7 @@ module.exports.isLoggedIn = async function (req, res, next) {
 
       let user = await userModel
         .findOne({ email: decoded.email })
-        .select("-password");
-      
-        console.log('Here is cookie user '+ decoded.email);
-        
+        .select("-password");        
 
       req.user = user;
 

@@ -48,7 +48,8 @@ module.exports.loginUser = async function (req, res) {
       if (result) {
         let token = generateToken(user);
         
-        res.cookie("token", token);
+        res.cookie("token", token, );        
+        
         req.flash("success", "login successful!");
         res.send("login successful!");
       } else {
