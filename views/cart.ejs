@@ -1,5 +1,6 @@
 <%- include('./partials/header') %>
     <% user.cart.forEach(function(item){ %>
+        <% const bill = (Number(item.price)) + (Number(item.discount)) + 20; %>
         <div class="w-full h-screen flex items-start px-20 py-20 gap-10">
             <div class="w-[30%] rounded-md overflow-hidden">
                 <div class="w-full flex justify-center items-center h-80 bg-[<%= item.bgcolor %>]">
